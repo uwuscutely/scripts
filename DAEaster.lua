@@ -26,13 +26,14 @@ b:Button(
     function()
         local plr = game.Players.LocalPlayer
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local EggRemote = ReplicatedStorage.EasterEventStorage:WaitForChild("GetCalendarEggRemote")
+        local eggFunction = ReplicatedStorage.EasterEventStorage:WaitForChild("GetCalendarEggRemote")
 
         for i, v in pairs(Workspace:GetDescendants()) do
-            if v:IsA("MeshPart") and v.MeshId == "rbxassetid://6550885058" and v.Name ~= "Egg" then
+            if v:IsA("MeshPart") and v.MeshId == "rbxassetid://6540320264" and v.Name ~= "Egg" then
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
                 wait()
-                EggRemote:FireServer(v.Parent)
+                local UwU = eggFunction:InvokeServer(v.Parent)
+                print(v.Parent, UwU)
             end
         end
     end
