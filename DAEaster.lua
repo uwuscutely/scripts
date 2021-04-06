@@ -12,7 +12,7 @@ function()
    local TwT = ReplicatedStorage.EasterEventStorage:WaitForChild("GetEggRemote")
 
    for i, v in pairs(Workspace:GetDescendants()) do
-      if v:IsA("MeshPart") and v.MeshId == "rbxassetid://6540319837" and v.Name ~= "Egg" then
+      if v:IsA("MeshPart") and v.MeshId == "rbxassetid://6563267204" and v.Name ~= "Egg" then
          noob.Character.HumanoidRootPart.CFrame = v.CFrame
          wait()
          TwT:FireServer(v.Parent)
