@@ -22,14 +22,14 @@ end
 )
 
 b:Button(
-"Chaos Egg TP",
+"Mystery Egg TP",
 function()
    local noob = game.Players.LocalPlayer
    local ReplicatedStorage = game:GetService("ReplicatedStorage")
    local OwO = ReplicatedStorage.EasterEventStorage:WaitForChild("GetCalendarEggRemote")
 
    for i, v in pairs(Workspace:GetDescendants()) do
-      if v:IsA("MeshPart") and v.MeshId == "rbxassetid://6540320456" and v.Name ~= "Egg" then
+      if v:IsA("MeshPart") and v.MeshId == "rbxassetid://6540320589" and v.Name ~= "Egg" then
          noob.Character.HumanoidRootPart.CFrame = v.CFrame
          wait()
          local UwU = OwO:InvokeServer(v.Parent)
@@ -54,22 +54,5 @@ function()
    end
 end
 )
-
-b:Toggle("Auto Collect",function(bool)
-   shared.toggle = bool
-   while true do
-      for _,v in pairs(game:GetService("Workspace").HarvestZones.Fruit.Drops.Small:GetDescendants()) do
-         if v:IsA("MeshPart")    then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame
-            wait(0.5)
-            fireclickdetector(game:GetService("Workspace").HarvestZones.Fruit.Drops.Small.ClickDetector)
-            wait(8)
-			if shared.toggle == false then
-			   break
-			end
-         end
-      end
-   end
-end)
 
 b:DestroyGui()
