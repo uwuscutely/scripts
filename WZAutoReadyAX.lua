@@ -5,7 +5,7 @@ end
 
 local UwU = game:GetService("Players").LocalPlayer
 local NeverGonnaGiveYouUp = game:GetService("ReplicatedStorage")
-local DeezNuts = UwU.Character or UwU.CharacterAdded:Wait()
+local DeezNuts = UwU.Character or UwU.CharacterAppearanceLoaded:Wait()
 local TheSlaveStartedTheirShift = NeverGonnaGiveYouUp.Shared.Missions:WaitForChild("MissionStart")
 local BossCommittedDie = NeverGonnaGiveYouUp.Shared.Missions:WaitForChild("MissionFinished")
 local ReadyToGTFO = NeverGonnaGiveYouUp.Shared.Missions:WaitForChild("NotifyReadyToLeave")
@@ -18,8 +18,6 @@ end
 
 if UrMom.Level.Value <= 31 and game.PlaceId == 4310464656 then
     print("You passed the vibe check")
-    DeezNuts:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(833, 74, 2283)
-    wait(5)
     DeezNuts:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(833, 74, 2283)
     print("Moved yo lazy ass to the corner")
     BossCommittedDie.OnClientEvent:Connect(function()
