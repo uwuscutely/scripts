@@ -125,7 +125,7 @@ elseif PlaceId == 4310476380 then -- Scarecrow
 elseif PlaceId == 4310464656 then -- Dire Prob
 	fourDifficulties()
 elseif PlaceId == 4310478830 then -- Kingslayer
-	fourDifficulties()
+    fourDifficulties()
 elseif PlaceId == 3383444582 then -- Gravetower
 	fiveDifficulties()
 elseif PlaceId == 3165900886 then -- Volcano Dungeon
@@ -155,6 +155,6 @@ elseif PlaceId == 6847034886 then -- Underworld
 elseif PlaceId == 7071564842 then -- Mez Tower
 	tower()
 	MissionFinished.OnClientEvent:Connect(function()
-		print("Wow the script worked.. Meow meow...")
-	end)
+		print("Wow the script worked.. Meow meow..")
+    end)
 end
