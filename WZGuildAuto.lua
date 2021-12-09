@@ -155,6 +155,6 @@ elseif PlaceId == 6847034886 then -- Underworld
 elseif PlaceId == 7071564842 then -- Mez Tower
 	tower()
 	MissionFinished.OnClientEvent:Connect(function()
-		print("Wow the script worked.. Meow meow..")
+		print("Wow the script worked.. Meow meow...")
 	end)
 end
