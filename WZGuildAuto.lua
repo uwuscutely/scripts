@@ -18,6 +18,7 @@ local function oneDifficulty()
 
     if difficulty < 4 then
         MissionFinished.OnClientEvent:Connect(function()
+            wait(5)
             StartRaid:FireServer(missionID + 1, 1)
         end)
     end
@@ -30,10 +31,12 @@ local function twoDifficulties()
 
     if difficulty < 2 then
         MissionFinished.OnClientEvent:Connect(function()
+            wait(5)
             StartRaid:FireServer(missionID, difficulty + 1)
         end)
     else
         MissionFinished.OnClientEvent:Connect(function()
+            wait(5)
             StartRaid:FireServer(missionID + 1, 1)
         end)
     end
@@ -46,10 +49,12 @@ local function threeDifficulties()
 
     if difficulty < 3 then
         MissionFinished.OnClientEvent:Connect(function()
+            wait(5)
             StartRaid:FireServer(missionID, difficulty + 1)
         end)
     else
         MissionFinished.OnClientEvent:Connect(function()
+            wait(5)
             StartRaid:FireServer(missionID + 1, 1)
         end)
     end
@@ -62,10 +67,12 @@ local function fourDifficulties()
 
     if difficulty < 4 then
         MissionFinished.OnClientEvent:Connect(function()
+            wait(5)
             StartRaid:FireServer(missionID, difficulty + 1)
         end)
     else
         MissionFinished.OnClientEvent:Connect(function()
+            wait(5)
             if missionID == 4 then
                 StartRaid:FireServer(6, 1)
             elseif missionID == 20 then
@@ -85,23 +92,28 @@ local function fiveDifficulties()
     if difficulty < 5 then
         if difficulty == 2 and PlaceId == 6847034886 then
             MissionFinished.OnClientEvent:Connect(function()
+                wait(5)
                 StartRaid:FireServer(missionID, 5)
             end)
         elseif difficulty == 2 and PlaceId == 6386112652 then
             MissionFinished.OnClientEvent:Connect(function()
+                wait(5)
                 StartRaid:FireServer(missionID, 5)
             end)
         elseif difficulty == 2 and PlaceId == 6510862058 then
             MissionFinished.OnClientEvent:Connect(function()
+                wait(5)
                 StartRaid:FireServer(missionID, 5)
             end)
         else
             MissionFinished.OnClientEvent:Connect(function()
+                wait(5)
                 StartRaid:FireServer(missionID, difficulty + 1)
             end)
         end
     else
         MissionFinished.OnClientEvent:Connect(function()
+            wait(5)
             if missionID == 7 then
                 StartRaid:FireServer(11, 1)
             elseif missionID == 16 then
