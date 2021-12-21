@@ -139,44 +139,14 @@ local function tower()
     end)
 end
 
-if PlaceId == 2978696440 then -- Crabby
+if PlaceId == 2978696440 or 4310476380 then -- Crabby, Scarecrow
     oneDifficulty()
-elseif PlaceId == 4310476380 then -- Scarecrow
-    oneDifficulty()
-elseif PlaceId == 4310464656 then -- Dire Prob
+elseif PlaceId == 4310464656 or 4310478830 or 3885726701 or 3994953548 or 4465988196 or 4465989351 or 4646475342 or 4646473427 then -- Dire Prob, Kingslayer, Ruin, Mama, Mountain Pass, Winter Cavern, Deserted, Scrap
     fourDifficulties()
-elseif PlaceId == 4310478830 then -- Kingslayer
-    fourDifficulties()
-elseif PlaceId == 3383444582 then -- Gravetower
+elseif PlaceId == 3383444582 or 3165900886 or 4050468028 or 4465989998 or 4646475570 or 6386112652 or 6510862058 or 6847034886 then -- Gravetower, Volcano Dungeon, Volcano's Shadow, Winter Dungeon, Pyramid Dungeon, Konoh, Rough Waters, Underworld
     fiveDifficulties()
-elseif PlaceId == 3165900886 then -- Volcano Dungeon
-    fiveDifficulties()
-elseif PlaceId == 3885726701 then -- Ruin
-    fourDifficulties()
-elseif PlaceId == 3994953548 then -- Mama
-    fourDifficulties()
-elseif PlaceId == 4050468028 then -- Volcano's Shadow
-    fiveDifficulties()
-elseif PlaceId == 4465988196 then -- Mountain Pass
-    fourDifficulties()
-elseif PlaceId == 4465989351 then -- Winter Cavern
-    fourDifficulties()
-elseif PlaceId == 4465989998 then -- Winter Dungeon
-    fiveDifficulties()
-elseif PlaceId == 4646475570 then -- Pyramid Dungeon
-    fiveDifficulties()
-elseif PlaceId == 4646475342 then -- Deserted
-    fourDifficulties()
-elseif PlaceId == 4646473427 then -- Scrap
-    fourDifficulties()
 elseif PlaceId == 5703353651 then -- Prison Tower
     tower()
-elseif PlaceId == 6386112652 then -- Konoh
-    fiveDifficulties()
-elseif PlaceId == 6510862058 then -- Rough Waters
-    fiveDifficulties()
-elseif PlaceId == 6847034886 then -- Underworld
-    fiveDifficulties()
 elseif PlaceId == 7071564842 then -- Mez Tower
     local missionID = ActiveMission.Value
     local TowerFinished = ReplicatedStorage.MissionScripts[missionID]:WaitForChild("TowerFinished")
