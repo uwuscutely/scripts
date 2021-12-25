@@ -134,7 +134,10 @@ local function tower()
     TowerFinished.OnClientEvent:Connect(function()
         if missionID == 21 then
             wait(15)
-            StartRaid:FireServer(24, 1)
+            StartRaid:FireServer(23)
+        elseif missionID == 23 then
+            wait(15)
+            StartRaid:FireServer(24)
         end
     end)
 end
@@ -171,6 +174,8 @@ elseif PlaceId == 4646473427 then -- Scrap
     fourDifficulties()
 elseif PlaceId == 5703353651 then -- Prison Tower
     tower()
+elseif PlaceId == 6075085184 then -- Atlantis Tower
+    tower()
 elseif PlaceId == 6386112652 then -- Konoh
     fiveDifficulties()
 elseif PlaceId == 6510862058 then -- Rough Waters
@@ -183,5 +188,13 @@ elseif PlaceId == 7071564842 then -- Mez Tower
     tower()
     TowerFinished.OnClientEvent:Connect(function()
         print("Wow the script worked.. Meow meow..")
+    end)
+elseif PlaceId == 4526768588 then -- Klaus
+    local missionID = ActiveMission.Value
+    local MissionFinished = ReplicatedStorage.MissionScripts[missionID]:WaitForChild("MissionFinished")
+    print("UwU", "OwO", missionID)
+    MissionFinished.OnClientEvent:Connect(function()
+        wait(10)
+        StartRaid:FireServer(17)
     end)
 end
