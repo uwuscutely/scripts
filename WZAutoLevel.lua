@@ -17,12 +17,14 @@ local missionID = ActiveMission.Value
 local level = ReplicatedStorage.Profiles[Player].Level.Value
     
 local function autoLevel()
-    -- Automatically ready up and choose to repeat dungeon in case of party leader change
+    -- Automatically ready up and choose to repeat dungeon in case of party leader change. (Used if you're being carried by a max level acc)
     LeaveChoice:FireServer("true")
     NotifyReadyToLeave:FireServer()
 
-    -- Detect if player matches a new dungeon level threshold. If yes tp to new dungeon else repeat current dungeon
-    if level == 90 then
+    -- Detect if player matches a new dungeon level threshold. If tp to new dungeon else repeat current dungeon
+    if level == 100 then
+        return
+    elseif level == 90 then
         StartRaid:FireServer(27)
     elseif level == 75
         StartRaid:FireServer(25, 1)
