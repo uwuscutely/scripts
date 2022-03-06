@@ -26,37 +26,37 @@ local function autoLevel()
         return
     elseif level == 90 then
         StartRaid:FireServer(27)
-    elseif level == 75
+    elseif level == 75 then
         StartRaid:FireServer(25, 1)
-    elseif level == 60
+    elseif level == 60 then
         StartRaid:FireServer(21)
-    elseif level == 55
+    elseif level == 55 then
         StartRaid:FireServer(18, 1)
-    elseif level == 50
+    elseif level == 50 then
         StartRaid:FireServer(19, 1)
-    elseif level == 45
+    elseif level == 45 then
         StartRaid:FireServer(20, 1)
-    elseif level == 40
+    elseif level == 40 then
         StartRaid:FireServer(16, 1)
-    elseif level == 35
+    elseif level == 35 then
         StartRaid:FireServer(15, 1)
-    elseif level == 30
+    elseif level == 30 then
         StartRaid:FireServer(14, 1)
-    elseif level == 26
+    elseif level == 26 then
         StartRaid:FireServer(7, 1)
-    elseif level == 22
+    elseif level == 22 then
         StartRaid:FireServer(13, 1)
-    elseif level == 18
+    elseif level == 18 then
         StartRaid:FireServer(12, 1)
-    elseif level == 15
+    elseif level == 15 then
         StartRaid:FireServer(11, 1)
-    elseif level == 12
+    elseif level == 12 then
         StartRaid:FireServer(6, 1)
-    elseif level == 10
+    elseif level == 10 then
         StartRaid:FireServer(4, 1)
-    elseif level == 7
+    elseif level == 7 then
         StartRaid:FireServer(2, 1)
-    elseif level == 4
+    elseif level == 4 then
         StartRaid:FireServer(3, 1)
     else
         -- 21 and 27 are towers. Don't fire with difficulty parameter in case of tower
