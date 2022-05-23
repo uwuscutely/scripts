@@ -34,14 +34,6 @@ LeftGroupBox:AddToggle('AutoPickup', {
     Tooltip = 'Automatically pickup items epic tier or above, portal scrolls, and currency.',
 })
 
-LeftGroupBox:AddDropdown('AutoPickupSelection', {
-    Values = { 'Epics', 'Legendaries', 'Mythics', 'Portals', "Currency"},
-    Default = 1, 
-    Multi = true,
-    Text = 'A dropdown',
-    Tooltip = 'This is a tooltip',
-})
-
 local function colorToRarity(rarity)
     local itemRarity
     if rarity == Color3.fromRGB(158, 59, 249):ToHex() then
@@ -86,18 +78,21 @@ Toggles.AutoPickup:OnChanged(function()
                 local color = v.BackgroundColor3:ToHex()
                 local rarity = colorToRarity(color)
                 local item = v.ItemName.Text
-                if color == Color3.fromRGB(249, 86, 59):ToHex() or color == Color3.fromRGB(255, 255, 255):ToHex() or v.Name:match("Portal") or v.Name:match("Copper") then
-                    task.wait()
+                if color == Color3.fromRGB(249, 86, 59):ToHex() or color == Color3.fromRGB(255, 255, 255):ToHex() then
+                    task.wait(0.5)
                     PickUpItem:InvokeServer(v.Name)
                     webhookPing(item, rarity)
+                elseif item:match("Portal") or item:match("Copper") then
+                    task.wait(0.5)
+                    PickUpItem:InvokeServer(v.Name)
                 end
             end
         end
     end
 end)
 
-LeftGroupBox:AddLabel('Never gonna give you up, never gonna let you down, never gonna run around and desert you...', true)
-LeftGroupBox:AddLabel('A ship shipping ship ships shipping ships...', true)
+LeftGroupBox:AddLabel('\nNever gonna give you up, never gonna let you down, never gonna run around and desert you...', true)
+LeftGroupBox:AddLabel('\nA ship shipping ship ships shipping ships...', true)
 
 Ability1:AddToggle('Ability1', {
     Text = 'Auto Ability #1',
@@ -107,10 +102,10 @@ Ability1:AddToggle('Ability1', {
 
 Ability1:AddSlider('Ability1Timer', {
     Text = 'Ability #1 Delay (Seconds)',
-    Default = 1,
-    Min = 0.1,
-    Max = 60,
-    Rounding = 2,
+    Default = 21,
+    Min = 1,
+    Max = 30,
+    Rounding = 1,
     Compact = false,
 })
 
@@ -138,10 +133,10 @@ Ability2:AddToggle('Ability2', {
 
 Ability2:AddSlider('Ability2Timer', {
     Text = 'Ability #2 Delay (Seconds)',
-    Default = 1,
-    Min = 0.1,
-    Max = 60,
-    Rounding = 2,
+    Default = 21,
+    Min = 1,
+    Max = 30,
+    Rounding = 1,
     Compact = false,
 })
 
