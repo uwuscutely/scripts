@@ -87,42 +87,44 @@ Toggles.AutoPickup:OnChanged(function()
         task.wait()
         for _,v in pairs(lootLabels:GetChildren()) do
             if v.Visible == true then
-                local color = v.BackgroundColor3:ToHex()
-                local rarity = colorToRarity(color)
-                local item = v.ItemName.Text
-
-                if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoPickupSelection.Value["Epics"] then
-                    task.wait(0.5)
-                    PickUpItem:InvokeServer(v.Name)
-                    pcall(webhookPing, item, rarity)
-                end
-
-                if color == Color3.fromRGB(249, 86, 59):ToHex() and Options.AutoPickupSelection.Value["Legendaries"] then
-                    task.wait(0.5)
-                    PickUpItem:InvokeServer(v.Name)
-                    pcall(webhookPing, item, rarity)
-                end
-                
-                if color == Color3.fromRGB(255, 255, 255):ToHex() and Options.AutoPickupSelection.Value["Mythics"] then
-                    task.wait(0.5)
-                    PickUpItem:InvokeServer(v.Name)
-                    pcall(webhookPing, item, rarity)
-                end
-
-                if item:match("Portal") and Options.AutoPickupSelection.Value["Portals"] then
-                    task.wait(0.5)
-                    PickUpItem:InvokeServer(v.Name)
-                end
-                
-                if item:match("Copper") and Options.AutoPickupSelection.Value["Currency"] then
-                    task.wait(0.5)
-                    PickUpItem:InvokeServer(v.Name)
-                end
-
-                if item:match("Regret") and Options.AutoPickupSelection.Value["Regret Stones"] then
-                    task.wait(0.5)
-                    PickUpItem:InvokeServer(v.Name)
-                end
+                pcall(function()
+                    local color = v.BackgroundColor3:ToHex()
+                    local rarity = colorToRarity(color)
+                    local item = v.ItemName.Text
+    
+                    if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoPickupSelection.Value["Epics"] then
+                        task.wait(0.5)
+                        PickUpItem:InvokeServer(v.Name)
+                        pcall(webhookPing, item, rarity)
+                    end
+    
+                    if color == Color3.fromRGB(249, 86, 59):ToHex() and Options.AutoPickupSelection.Value["Legendaries"] then
+                        task.wait(0.5)
+                        PickUpItem:InvokeServer(v.Name)
+                        pcall(webhookPing, item, rarity)
+                    end
+                    
+                    if color == Color3.fromRGB(255, 255, 255):ToHex() and Options.AutoPickupSelection.Value["Mythics"] then
+                        task.wait(0.5)
+                        PickUpItem:InvokeServer(v.Name)
+                        pcall(webhookPing, item, rarity)
+                    end
+    
+                    if item:match("Portal") and Options.AutoPickupSelection.Value["Portals"] then
+                        task.wait(0.5)
+                        PickUpItem:InvokeServer(v.Name)
+                    end
+                    
+                    if item:match("Copper") and Options.AutoPickupSelection.Value["Currency"] then
+                        task.wait(0.5)
+                        PickUpItem:InvokeServer(v.Name)
+                    end
+    
+                    if item:match("Regret") and Options.AutoPickupSelection.Value["Regret Stones"] then
+                        task.wait(0.5)
+                        PickUpItem:InvokeServer(v.Name)
+                    end
+                end)
             end
         end
     end
