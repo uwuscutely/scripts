@@ -8,8 +8,11 @@ local VirtualInputManager = game:GetService("VirtualInputManager")
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
 local PlayerGui = game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui')
+local slots = PlayerGui.ScreenGui.Inventory.Slots
 local lootLabels = PlayerGui.LootLabel
+
 local PickUpItem = ReplicatedStorage.Knit.Services.GroundItemService.RF.PickUpItem
+local SellingItems = ReplicatedStorage.Knit.Services.ShopSellService.RF.SellingItems
 
 local Window = Library:CreateWindow({
     Title = 'UwU | Mewobwox Utiwities',
@@ -24,6 +27,7 @@ local Tabs = {
 
 local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Auto Pickup')
 local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Notifwer Settwings')
+local LeftGroupBox3 = Tabs.Main:AddLeftGroupbox('Auto Seww')
 local RightGroupBox = Tabs.Main:AddRightGroupbox('Auto Abiwity')
 
 LeftGroupBox:AddToggle('AutoPickup', {
@@ -32,8 +36,10 @@ LeftGroupBox:AddToggle('AutoPickup', {
     Tooltip = 'Automaticawwy pickup items epic tiew ow above, powtal scwolls, awnd cuwwency.',
 })
 
+LeftGroupBox:AddLabel('\nAuto pickup\'s common option will pickup potions, scrolls, and stones. You don\'t need to select those on top of the common option.\n', true)
+
 LeftGroupBox:AddDropdown('AutoPickupSelection', {
-    Values = { 'Epics', 'Legendaries', 'Mythics', 'Portals', "Currency", "Regret Stones"},
+    Values = {'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic', 'City Portal', "Currency", "Regret Stone"},
     Default = 1, 
     Multi = true,
     Text = 'Auto Pickup Sewection',
@@ -42,7 +48,16 @@ LeftGroupBox:AddDropdown('AutoPickupSelection', {
 
 local function colorToRarity(rarity)
     local itemRarity
-    if rarity == Color3.fromRGB(158, 59, 249):ToHex() then
+    if rarity == Color3.fromRGB(121, 137, 142):ToHex() then
+        itemRarity = "Common"
+        return itemRarity
+    elseif rarity == Color3.fromRGB(52, 202, 73):ToHex() then
+        itemRarity = "Uncommon"
+        return itemRarity
+    elseif rarity == Color3.fromRGB(5, 128, 233):ToHex() then
+        itemRarity = "Rare"
+        return itemRarity
+    elseif rarity == Color3.fromRGB(158, 59, 249):ToHex() then
         itemRarity = "Epic"
         return itemRarity
     elseif rarity == Color3.fromRGB(249, 86, 59):ToHex() then
@@ -91,26 +106,41 @@ Toggles.AutoPickup:OnChanged(function()
                     local color = v.BackgroundColor3:ToHex()
                     local rarity = colorToRarity(color)
                     local item = v.ItemName.Text
-    
-                    if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoPickupSelection.Value["Epics"] then
+                    
+                    if color == Color3.fromRGB(121, 137, 142):ToHex() and Options.AutoPickupSelection.Value["Common"] then
+                        task.wait(0.5)
+                        PickUpItem:InvokeServer(v.Name)
+                    end
+
+                    if color == Color3.fromRGB(52, 202, 73):ToHex() and Options.AutoPickupSelection.Value["Uncommon"] then
+                        task.wait(0.5)
+                        PickUpItem:InvokeServer(v.Name)
+                    end
+
+                    if color == Color3.fromRGB(5, 128, 233):ToHex() and Options.AutoPickupSelection.Value["Rare"] then
+                        task.wait(0.5)
+                        PickUpItem:InvokeServer(v.Name)
+                    end
+
+                    if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoPickupSelection.Value["Epic"] then
                         task.wait(0.5)
                         PickUpItem:InvokeServer(v.Name)
                         pcall(webhookPing, item, rarity)
                     end
     
-                    if color == Color3.fromRGB(249, 86, 59):ToHex() and Options.AutoPickupSelection.Value["Legendaries"] then
+                    if color == Color3.fromRGB(249, 86, 59):ToHex() and Options.AutoPickupSelection.Value["Legendary"] then
                         task.wait(0.5)
                         PickUpItem:InvokeServer(v.Name)
                         pcall(webhookPing, item, rarity)
                     end
                     
-                    if color == Color3.fromRGB(255, 255, 255):ToHex() and Options.AutoPickupSelection.Value["Mythics"] then
+                    if color == Color3.fromRGB(255, 255, 255):ToHex() and Options.AutoPickupSelection.Value["Mythic"] then
                         task.wait(0.5)
                         PickUpItem:InvokeServer(v.Name)
                         pcall(webhookPing, item, rarity)
                     end
     
-                    if item:match("Portal") and Options.AutoPickupSelection.Value["Portals"] then
+                    if item:match("Portal") and Options.AutoPickupSelection.Value["City Portal"] then
                         task.wait(0.5)
                         PickUpItem:InvokeServer(v.Name)
                     end
@@ -120,7 +150,7 @@ Toggles.AutoPickup:OnChanged(function()
                         PickUpItem:InvokeServer(v.Name)
                     end
     
-                    if item:match("Regret") and Options.AutoPickupSelection.Value["Regret Stones"] then
+                    if item:match("Regret") and Options.AutoPickupSelection.Value["Regret Stone"] then
                         task.wait(0.5)
                         PickUpItem:InvokeServer(v.Name)
                     end
@@ -130,8 +160,11 @@ Toggles.AutoPickup:OnChanged(function()
     end
 end)
 
+--[[
 LeftGroupBox:AddLabel('\nNever gonna give you up, never gonna let you down, never gonna run around and desert you...', true)
 LeftGroupBox:AddLabel('\nA ship shipping ship ships shipping ships...', true)
+]]
+
 
 LeftGroupBox2:AddToggle('WebhookToggle', {
     Text = 'Enabwe Webhook',
@@ -147,6 +180,98 @@ LeftGroupBox2:AddInput('WebhookLink', {
     Tooltip = 'Paste youw Discowd webhook wink hewe.',
     Placeholder = 'Webhook Wink Here',
 })
+
+LeftGroupBox3:AddToggle('AutoSell', {
+    Text = 'Auto Seww ',
+    Default = false,
+    Tooltip = 'Automaticawwy sell your shit',
+})
+
+LeftGroupBox3:AddDropdown('AutoSellSelection', {
+    Values = { 'Common', 'Uncommon', 'Rare', 'Epic'},
+    Default = 1, 
+    Multi = true,
+    Text = 'Auto Seww Sewection',
+    Tooltip = 'Sewect whawt the auto seww shouwd seww.',
+})
+
+Toggles.AutoSell:OnChanged(function()
+    while Toggles.AutoSell.Value do
+        task.wait()
+        for _,v in pairs(slots:GetChildren()) do
+            local sellTable = {}
+            local item = v:FindFirstChild("Item")
+
+            if item then
+                pcall(function()
+                    local color = item.Button.BackgroundColor3:ToHex()
+                    local itemID = item:GetAttribute("ItemID")
+                    local itemName = item:GetAttribute("Name")
+                    local itemSlot = item.Parent.Name
+
+                    if color == Color3.fromRGB(121, 137, 142):ToHex() and Options.AutoSellSelection.Value["Common"] and not itemName:match("Portal") and not itemName:match("Regret") then
+                        sellTable[itemID] = itemSlot
+                    end
+
+                    if color == Color3.fromRGB(52, 202, 73):ToHex() and Options.AutoSellSelection.Value["Uncommon"] then
+                        sellTable[itemID] = itemSlot
+                    end
+
+                    if color == Color3.fromRGB(5, 128, 233):ToHex() and Options.AutoSellSelection.Value["Rare"] then
+                        sellTable[itemID] = itemSlot
+                    end
+
+                    if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoSellSelection.Value["Epic"] then
+                        sellTable[itemID] = itemSlot
+                    end
+
+                    if next(sellTable) ~= nil then
+                        SellingItems:InvokeServer(sellTable)
+                    end
+                end)
+            end
+        end
+        task.wait(10)
+    end
+end)
+
+LeftGroupBox3:AddLabel('\nSelling commons does not include portals or regret stones. Common potions (health/mana) will be sold.', true)
+
+local SellNow = LeftGroupBox3:AddButton('Sell Now', function()
+    for _,v in pairs(slots:GetChildren()) do
+        local sellTable = {}
+        local item = v:FindFirstChild("Item")
+
+        if item then
+            pcall(function()
+                local color = item.Button.BackgroundColor3:ToHex()
+                local itemID = item:GetAttribute("ItemID")
+                local itemName = item:GetAttribute("Name")
+                local itemSlot = item.Parent.Name
+
+                if color == Color3.fromRGB(121, 137, 142):ToHex() and Options.AutoSellSelection.Value["Common"] and not itemName:match("Portal") and not itemName:match("Regret") then
+                    sellTable[itemID] = itemSlot
+                end
+
+                if color == Color3.fromRGB(52, 202, 73):ToHex() and Options.AutoSellSelection.Value["Uncommon"] then
+                    sellTable[itemID] = itemSlot
+                end
+
+                if color == Color3.fromRGB(5, 128, 233):ToHex() and Options.AutoSellSelection.Value["Rare"] then
+                    sellTable[itemID] = itemSlot
+                end
+
+                if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoSellSelection.Value["Epic"] then
+                    sellTable[itemID] = itemSlot
+                end
+
+                if next(sellTable) ~= nil then
+                    SellingItems:InvokeServer(sellTable)
+                end
+            end)
+        end
+    end
+end)
 
 RightGroupBox:AddToggle('Ability1', {
     Text = 'Auto Abiwity #1',
