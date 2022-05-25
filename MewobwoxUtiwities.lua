@@ -1,8 +1,9 @@
-local repo = 'https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/'
+-- UI by Inori, maintained by Wally
+local repo = 'https://raw.githubusercontent.com/uwuscutely/LinoriaLib/main/'
 
-local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
-local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
-local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+local Library = loadstring(game:HttpGet(repo..'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo..'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo..'addons/SaveManager.lua'))()
 
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
@@ -13,9 +14,14 @@ local lootLabels = PlayerGui.LootLabel
 
 local PickUpItem = ReplicatedStorage.Knit.Services.GroundItemService.RF.PickUpItem
 local SellingItems = ReplicatedStorage.Knit.Services.ShopSellService.RF.SellingItems
+local InputReceived = ReplicatedStorage.Knit.Services.ActionBarService.RE.InputReceived
+
+ver = '1.5.0'
+
+Library:Notify('Loading Mewobwox Utiwities v'..ver, 5)
 
 local Window = Library:CreateWindow({
-    Title = 'UwU | Mewobwox Utiwities',
+    Title = 'UwU | Mewobwox Utiwities v'..ver,
     Center = true, 
     AutoShow = true,
 })
@@ -29,6 +35,12 @@ local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Auto Pickup')
 local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Notifwer Settwings')
 local LeftGroupBox3 = Tabs.Main:AddLeftGroupbox('Auto Seww')
 local RightGroupBox = Tabs.Main:AddRightGroupbox('Auto Abiwity')
+local UpdateGroupBox = Tabs.Main:AddRightGroupbox('Update Log')
+
+UpdateGroupBox:AddLabel('+ Updated auto sell to prevent rare+ pets and epic+ eggs from deletion.\n', true)
+UpdateGroupBox:AddLabel('+ Updated auto ability to directly fire the action remote. Keybind input removed.\n', true)
+UpdateGroupBox:AddLabel('+ Implemented automatic update checker. Will notify if out of date.\n', true)
+UpdateGroupBox:AddLabel('+ Added RGB accent colors. Toggleable in UI Settings tab.\n', true)
 
 LeftGroupBox:AddToggle('AutoPickup', {
     Text = 'Auto Pickup',
@@ -217,11 +229,11 @@ Toggles.AutoSell:OnChanged(function()
                         sellTable[itemID] = itemSlot
                     end
 
-                    if color == Color3.fromRGB(5, 128, 233):ToHex() and Options.AutoSellSelection.Value["Rare"] then
+                    if color == Color3.fromRGB(5, 128, 233):ToHex() and Options.AutoSellSelection.Value["Rare"] and not itemName:match("Pet") then
                         sellTable[itemID] = itemSlot
                     end
 
-                    if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoSellSelection.Value["Epic"] then
+                    if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoSellSelection.Value["Epic"] and not itemName:match("Egg") and not itemName:match("Pet") then
                         sellTable[itemID] = itemSlot
                     end
 
@@ -235,7 +247,7 @@ Toggles.AutoSell:OnChanged(function()
     end
 end)
 
-LeftGroupBox3:AddLabel('\nSelling commons does not include portals or regret stones. Common potions (health/mana) will be sold.', true)
+LeftGroupBox3:AddLabel('\nSelling commons doesn\'t include portals or regret stones. Common potions (health/mana) will be sold. Rare+ pets and epic+ eggs will not be sold.', true)
 
 local SellNow = LeftGroupBox3:AddButton('Sell Now', function()
     for _,v in pairs(slots:GetChildren()) do
@@ -257,11 +269,11 @@ local SellNow = LeftGroupBox3:AddButton('Sell Now', function()
                     sellTable[itemID] = itemSlot
                 end
 
-                if color == Color3.fromRGB(5, 128, 233):ToHex() and Options.AutoSellSelection.Value["Rare"] then
+                if color == Color3.fromRGB(5, 128, 233):ToHex() and Options.AutoSellSelection.Value["Rare"] and not itemName:match("Pet") then
                     sellTable[itemID] = itemSlot
                 end
 
-                if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoSellSelection.Value["Epic"] then
+                if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoSellSelection.Value["Epic"] and not itemName:match("Egg") and not itemName:match("Pet") then
                     sellTable[itemID] = itemSlot
                 end
 
@@ -288,18 +300,11 @@ RightGroupBox:AddSlider('Ability1Timer', {
     Compact = false,
 })
 
-RightGroupBox:AddLabel('Ability #1 Keybind'):AddKeyPicker('Ability1Keybind', {
-    SyncToggleState = false, 
-    Mode = 'Hold',
-    Text = 'Define auto abiwity #1\'s keybind',
-    NoUI = true,
-})
-
 Toggles.Ability1:OnChanged(function()
     while Toggles.Ability1.Value do
-        VirtualInputManager:SendKeyEvent(true, Options.Ability1Keybind.Value, false, game)
+        InputReceived:FireServer("Action2", "Down")
         task.wait()
-        VirtualInputManager:SendKeyEvent(false, Options.Ability1Keybind.Value, false, game)
+        InputReceived:FireServer("Action2", "Up")
         task.wait(Options.Ability1Timer.Value)
     end
 end)
@@ -321,18 +326,11 @@ RightGroupBox:AddSlider('Ability2Timer', {
     Compact = false,
 })
 
-RightGroupBox:AddLabel('Ability #2 Keybind'):AddKeyPicker('Ability2Keybind', {
-    SyncToggleState = false, 
-    Mode = 'Hold',
-    Text = 'Define auto abiwity #2\'s keybind',
-    NoUI = true,
-})
-
 Toggles.Ability2:OnChanged(function()
     while Toggles.Ability2.Value do
-        VirtualInputManager:SendKeyEvent(true, Options.Ability2Keybind.Value, false, game)
+        InputReceived:FireServer("Action3", "Down")
         task.wait()
-        VirtualInputManager:SendKeyEvent(false, Options.Ability2Keybind.Value, false, game)
+        InputReceived:FireServer("Action3", "Up")
         task.wait(Options.Ability2Timer.Value)
     end
 end)
@@ -357,3 +355,50 @@ ThemeManager:SetFolder('RawrX3Nuzzles')
 SaveManager:SetFolder('RawrX3Nuzzles/Mewobwox')
 SaveManager:BuildConfigSection(Tabs['UI Settings'])
 ThemeManager:ApplyToTab(Tabs['UI Settings'])
+Library:Notify('Loaded Mewobwox Utiwities v'..ver..'! Meow meow ^-^', 5)
+
+-- RGB gradient from https://github.com/violin-suzutsuki/LinoriaLib
+task.spawn(function()
+    while game:GetService('RunService').RenderStepped:Wait() do
+        if Toggles.Rainbow.Value then
+            local Registry = Window.Holder.Visible and Library.Registry or Library.HudRegistry
+
+            for Idx, Object in next, Library.Registry do
+                for Property, ColorIdx in next, Object.Properties do
+                    if ColorIdx == 'AccentColor' or ColorIdx == 'AccentColorDark' then
+                        local Instance = Object.Instance
+                        local yPos = Instance.AbsolutePosition.Y
+
+                        local Mapped = Library:MapValue(yPos, 0, 1080, 0, 0.5) * 1.5
+                        local Color = Color3.fromHSV((Library.CurrentRainbowHue - Mapped) % 1, 0.8, 1)
+
+                        if ColorIdx == 'AccentColorDark' then
+                            Color = Library:GetDarkerColor(Color)
+                        end
+
+                        Instance[Property] = Color
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- Update checker from https://github.com/EdgeIY/infiniteyield
+task.spawn(function()
+    Library:Notify('Running update check!', 2)
+    while true do
+        if pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/uwuscutely/Scripts/main/Version'))() end) then
+            if ver ~= MUVersion then
+                Library:Notify('Your current version of Mewobwox Utiwities is outdated!\n\n Your version: '..ver..'\nLatest version: '..MUVersion..'\n\nGrab the latest version by re-executing the script!', 45)
+            end
+        end
+        task.wait(60)
+    end
+end)
+
+if pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/uwuscutely/Scripts/main/Version'))() end) then
+    if ver == MUVersion then
+        Library:Notify('You\'re running the latest verion of Mewobwox Utiwities!', 5)
+    end
+end
