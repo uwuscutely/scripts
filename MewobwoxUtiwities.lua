@@ -16,7 +16,7 @@ local PickUpItem = ReplicatedStorage.Knit.Services.GroundItemService.RF.PickUpIt
 local SellingItems = ReplicatedStorage.Knit.Services.ShopSellService.RF.SellingItems
 local InputReceived = ReplicatedStorage.Knit.Services.ActionBarService.RE.InputReceived
 
-ver = '1.5.0'
+ver = '1.5.1'
 
 Library:Notify('Loading Mewobwox Utiwities v'..ver, 5)
 
@@ -37,10 +37,8 @@ local LeftGroupBox3 = Tabs.Main:AddLeftGroupbox('Auto Seww')
 local RightGroupBox = Tabs.Main:AddRightGroupbox('Auto Abiwity')
 local UpdateGroupBox = Tabs.Main:AddRightGroupbox('Update Log')
 
-UpdateGroupBox:AddLabel('+ Updated auto sell to prevent rare+ pets and epic+ eggs from deletion.\n', true)
-UpdateGroupBox:AddLabel('+ Updated auto ability to directly fire the action remote. Keybind input removed.\n', true)
-UpdateGroupBox:AddLabel('+ Implemented automatic update checker. Will notify if out of date.\n', true)
-UpdateGroupBox:AddLabel('+ Added RGB accent colors. Toggleable in UI Settings tab.\n', true)
+UpdateGroupBox:AddLabel('+ Auto pickup commons will no longer pickup scrolls, currency, or portals. Select their respective options for those to be picked up.\n', true)
+UpdateGroupBox:AddLabel('+ Added sell portal and sell regret stone option into auto sell.\n', true)
 
 LeftGroupBox:AddToggle('AutoPickup', {
     Text = 'Auto Pickup',
@@ -48,7 +46,7 @@ LeftGroupBox:AddToggle('AutoPickup', {
     Tooltip = 'Automaticawwy pickup items epic tiew ow above, powtal scwolls, awnd cuwwency.',
 })
 
-LeftGroupBox:AddLabel('\nAuto pickup\'s common option will pickup potions, scrolls, and stones. You don\'t need to select those on top of the common option.\n', true)
+LeftGroupBox:AddLabel('\nAuto pickup\'s common option NOT pickup scrolls, currency, and stones. Select those on top of the common option.\n', true)
 
 LeftGroupBox:AddDropdown('AutoPickupSelection', {
     Values = {'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic', 'City Portal', "Currency", "Regret Stone"},
@@ -119,7 +117,7 @@ Toggles.AutoPickup:OnChanged(function()
                     local rarity = colorToRarity(color)
                     local item = v.ItemName.Text
                     
-                    if color == Color3.fromRGB(121, 137, 142):ToHex() and Options.AutoPickupSelection.Value["Common"] then
+                    if color == Color3.fromRGB(121, 137, 142):ToHex() and Options.AutoPickupSelection.Value["Common"] and not item:match("Portal") and not item:match("Regret") and not item:match("Copper") then
                         task.wait(0.5)
                         PickUpItem:InvokeServer(v.Name)
                     end
@@ -200,7 +198,7 @@ LeftGroupBox3:AddToggle('AutoSell', {
 })
 
 LeftGroupBox3:AddDropdown('AutoSellSelection', {
-    Values = { 'Common', 'Uncommon', 'Rare', 'Epic'},
+    Values = { 'Common', 'Uncommon', 'Rare', 'Epic', 'City Portal', 'Regret Stone'},
     Default = 1, 
     Multi = true,
     Text = 'Auto Seww Sewection',
@@ -234,6 +232,14 @@ Toggles.AutoSell:OnChanged(function()
                     end
 
                     if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoSellSelection.Value["Epic"] and not itemName:match("Egg") and not itemName:match("Pet") then
+                        sellTable[itemID] = itemSlot
+                    end
+
+                    if itemName:match("Portal") and Options.AutoSellSelection.Value["City Portal"] then
+                        sellTable[itemID] = itemSlot
+                    end
+    
+                    if itemName:match("Regret") and Options.AutoSellSelection.Value["Regret Stone"] then
                         sellTable[itemID] = itemSlot
                     end
 
@@ -274,6 +280,14 @@ local SellNow = LeftGroupBox3:AddButton('Sell Now', function()
                 end
 
                 if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoSellSelection.Value["Epic"] and not itemName:match("Egg") and not itemName:match("Pet") then
+                    sellTable[itemID] = itemSlot
+                end
+
+                if itemName:match("Portal") and Options.AutoSellSelection.Value["City Portal"] then
+                    sellTable[itemID] = itemSlot
+                end
+
+                if itemName:match("Regret") and Options.AutoSellSelection.Value["Regret Stone"] then
                     sellTable[itemID] = itemSlot
                 end
 
@@ -357,10 +371,30 @@ SaveManager:BuildConfigSection(Tabs['UI Settings'])
 ThemeManager:ApplyToTab(Tabs['UI Settings'])
 Library:Notify('Loaded Mewobwox Utiwities v'..ver..'! Meow meow ^-^', 5)
 
--- RGB gradient from https://github.com/violin-suzutsuki/LinoriaLib
+-- Update checker from https://github.com/EdgeIY/infiniteyield
 task.spawn(function()
-    while game:GetService('RunService').RenderStepped:Wait() do
-        if Toggles.Rainbow.Value then
+    Library:Notify('Running update check!', 2)
+    while true do
+        if pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/uwuscutely/Scripts/main/Version'))() end) then
+            if ver ~= MUVersion then
+                Library:Notify('Your current version of Mewobwox Utiwities is outdated!\n\nYour version: '..ver..'\nLatest version: '..MUVersion..'\n\nGrab the latest version by re-executing the script!', 45)
+            end
+        end
+        task.wait(60)
+    end
+end)
+
+if pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/uwuscutely/Scripts/main/Version'))() end) then
+    if ver == MUVersion then
+        Library:Notify('You\'re running the latest verion of Mewobwox Utiwities!', 5)
+    end
+end
+
+-- RGB gradient from https://github.com/violin-suzutsuki/LinoriaLib
+Toggles.Rainbow:OnChanged(function()
+    task.spawn(function()    
+        while Toggles.Rainbow.Value do
+            task.wait()
             local Registry = Window.Holder.Visible and Library.Registry or Library.HudRegistry
 
             for Idx, Object in next, Library.Registry do
@@ -381,24 +415,5 @@ task.spawn(function()
                 end
             end
         end
-    end
+    end)
 end)
-
--- Update checker from https://github.com/EdgeIY/infiniteyield
-task.spawn(function()
-    Library:Notify('Running update check!', 2)
-    while true do
-        if pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/uwuscutely/Scripts/main/Version'))() end) then
-            if ver ~= MUVersion then
-                Library:Notify('Your current version of Mewobwox Utiwities is outdated!\n\n Your version: '..ver..'\nLatest version: '..MUVersion..'\n\nGrab the latest version by re-executing the script!', 45)
-            end
-        end
-        task.wait(60)
-    end
-end)
-
-if pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/uwuscutely/Scripts/main/Version'))() end) then
-    if ver == MUVersion then
-        Library:Notify('You\'re running the latest verion of Mewobwox Utiwities!', 5)
-    end
-end
