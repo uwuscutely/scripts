@@ -8,15 +8,18 @@ local SaveManager = loadstring(game:HttpGet(repo..'addons/SaveManager.lua'))()
 local VirtualInputManager = game:GetService("VirtualInputManager")
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
-local PlayerGui = game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui')
+local Player = game:GetService("Players").LocalPlayer
+local PlayerGui = Player:WaitForChild('PlayerGui')
 local slots = PlayerGui.ScreenGui.Inventory.Slots
 local lootLabels = PlayerGui.LootLabel
+
+local InventoryController = require(Player.PlayerScripts.FrameworkClient.Controllers.Inventory.InventoryController)
 
 local PickUpItem = ReplicatedStorage.Knit.Services.GroundItemService.RF.PickUpItem
 local SellingItems = ReplicatedStorage.Knit.Services.ShopSellService.RF.SellingItems
 local InputReceived = ReplicatedStorage.Knit.Services.ActionBarService.RE.InputReceived
 
-ver = '1.5.1'
+ver = '1.6.0'
 
 Library:Notify('Loading Mewobwox Utiwities v'..ver, 5)
 
@@ -37,8 +40,7 @@ local LeftGroupBox3 = Tabs.Main:AddLeftGroupbox('Auto Seww')
 local RightGroupBox = Tabs.Main:AddRightGroupbox('Auto Abiwity')
 local UpdateGroupBox = Tabs.Main:AddRightGroupbox('Update Log')
 
-UpdateGroupBox:AddLabel('+ Auto pickup commons will no longer pickup scrolls, currency, or portals. Select their respective options for those to be picked up.\n', true)
-UpdateGroupBox:AddLabel('+ Added sell portal and sell regret stone option into auto sell.\n', true)
+UpdateGroupBox:AddLabel('+ Added stat filters for luck and quantity find. These filters will only apply to items epic+.\n', true)
 
 LeftGroupBox:AddToggle('AutoPickup', {
     Text = 'Auto Pickup',
@@ -170,12 +172,6 @@ Toggles.AutoPickup:OnChanged(function()
     end
 end)
 
---[[
-LeftGroupBox:AddLabel('\nNever gonna give you up, never gonna let you down, never gonna run around and desert you...', true)
-LeftGroupBox:AddLabel('\nA ship shipping ship ships shipping ships...', true)
-]]
-
-
 LeftGroupBox2:AddToggle('WebhookToggle', {
     Text = 'Enabwe Webhook',
     Default = false,
@@ -194,7 +190,7 @@ LeftGroupBox2:AddInput('WebhookLink', {
 LeftGroupBox3:AddToggle('AutoSell', {
     Text = 'Auto Seww ',
     Default = false,
-    Tooltip = 'Automaticawwy sell your shit',
+    Tooltip = 'Automaticawwy sell your garbage.',
 })
 
 LeftGroupBox3:AddDropdown('AutoSellSelection', {
@@ -203,6 +199,30 @@ LeftGroupBox3:AddDropdown('AutoSellSelection', {
     Multi = true,
     Text = 'Auto Seww Sewection',
     Tooltip = 'Sewect whawt the auto seww shouwd seww.',
+})
+
+LeftGroupBox3:AddToggle('StatFilter', {
+    Text = 'Stat Fiwtew',
+    Default = false, 
+    Tooltip = 'Pwotect epic+ wuck awnd quantity find items fwom being sowd.',
+})
+
+LeftGroupBox3:AddSlider('LuckFilterValue', {
+    Text = 'Min Luck',
+    Default = 30,
+    Min = 0,
+    Max = 50,
+    Rounding = 0,
+    Compact = false,
+})
+
+LeftGroupBox3:AddSlider('QFFilterValue', {
+    Text = 'Min Quantity Find',
+    Default = 10,
+    Min = 0,
+    Max = 50,
+    Rounding = 0,
+    Compact = false,
 })
 
 Toggles.AutoSell:OnChanged(function()
@@ -243,13 +263,26 @@ Toggles.AutoSell:OnChanged(function()
                         sellTable[itemID] = itemSlot
                     end
 
+                    if Toggles.StatFilter.Value then
+                        local luckValue = getSecondaryStats(item, "Luck")
+                        local qfValue = getSecondaryStats(item, "QuantityFind")
+
+                        if luckValue and qfValue then
+                            if color == Color3.fromRGB(158, 59, 249):ToHex() or color == Color3.fromRGB(249, 86, 59):ToHex() or color == Color3.fromRGB(255, 255, 255):ToHex() then
+                                if qfValue >= Options.QFFilterValue.Value and luckValue >= Options.LuckFilterValue.Value then 
+                                    sellTable[itemID] = nil
+                                end
+                            end
+                        end
+                    end
+
                     if next(sellTable) ~= nil then
                         SellingItems:InvokeServer(sellTable)
                     end
                 end)
             end
         end
-        task.wait(10)
+        task.wait(7)
     end
 end)
 
@@ -291,6 +324,19 @@ local SellNow = LeftGroupBox3:AddButton('Sell Now', function()
                     sellTable[itemID] = itemSlot
                 end
 
+                if Toggles.StatFilter.Value then
+                    local luckValue = getSecondaryStats(item, "Luck")
+                    local qfValue = getSecondaryStats(item, "QuantityFind")
+
+                    if luckValue and qfValue then
+                        if color == Color3.fromRGB(158, 59, 249):ToHex() or color == Color3.fromRGB(249, 86, 59):ToHex() or color == Color3.fromRGB(255, 255, 255):ToHex() then
+                            if qfValue >= Options.QFFilterValue.Value and luckValue >= Options.LuckFilterValue.Value then 
+                                sellTable[itemID] = nil
+                            end
+                        end
+                    end
+                end
+
                 if next(sellTable) ~= nil then
                     SellingItems:InvokeServer(sellTable)
                 end
@@ -307,7 +353,7 @@ RightGroupBox:AddToggle('Ability1', {
 
 RightGroupBox:AddSlider('Ability1Timer', {
     Text = 'Abiwity #1 Delay (Seconds)',
-    Default = 21,
+    Default = 0.69,
     Min = 0.1,
     Max = 30,
     Rounding = 2,
@@ -333,7 +379,7 @@ RightGroupBox:AddToggle('Ability2', {
 
 RightGroupBox:AddSlider('Ability2Timer', {
     Text = 'Abiwity #2 Delay (Seconds)',
-    Default = 21,
+    Default = 0.69,
     Min = 0.1,
     Max = 30,
     Rounding = 2,
@@ -392,7 +438,7 @@ end
 
 -- RGB gradient from https://github.com/violin-suzutsuki/LinoriaLib
 Toggles.Rainbow:OnChanged(function()
-    task.spawn(function()    
+    task.spawn(function()
         while Toggles.Rainbow.Value do
             task.wait()
             local Registry = Window.Holder.Visible and Library.Registry or Library.HudRegistry
@@ -414,6 +460,10 @@ Toggles.Rainbow:OnChanged(function()
                     end
                 end
             end
+        end
+
+        if not Toggles.Rainbow.Value then
+            ThemeManager:UpdateTheme()
         end
     end)
 end)
