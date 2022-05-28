@@ -19,7 +19,7 @@ local PickUpItem = ReplicatedStorage.Knit.Services.GroundItemService.RF.PickUpIt
 local SellingItems = ReplicatedStorage.Knit.Services.ShopSellService.RF.SellingItems
 local InputReceived = ReplicatedStorage.Knit.Services.ActionBarService.RE.InputReceived
 
-ver = '1.6.0'
+ver = '1.6.1'
 
 Library:Notify('Loading Mewobwox Utiwities v'..ver, 5)
 
@@ -48,7 +48,7 @@ LeftGroupBox:AddToggle('AutoPickup', {
     Tooltip = 'Automaticawwy pickup items epic tiew ow above, powtal scwolls, awnd cuwwency.',
 })
 
-LeftGroupBox:AddLabel('\nAuto pickup\'s common option NOT pickup scrolls, currency, and stones. Select those on top of the common option.\n', true)
+LeftGroupBox:AddLabel('Auto pickup\'s common option NOT pickup scrolls, currency, and stones. Select those on top of the common option.', true)
 
 LeftGroupBox:AddDropdown('AutoPickupSelection', {
     Values = {'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic', 'City Portal', "Currency", "Regret Stone"},
@@ -225,6 +225,17 @@ LeftGroupBox3:AddSlider('QFFilterValue', {
     Compact = false,
 })
 
+local function getSecondaryStats(item, stat)
+    local ItemGenInfo = InventoryController:GetItemGenInfo(item)
+    local SecondaryAtt = ItemGenInfo["SecondaryAtt"]
+    
+    for i,v in next, SecondaryAtt do
+        if i == stat then
+            return v[1]
+        end
+    end
+end
+
 Toggles.AutoSell:OnChanged(function()
     while Toggles.AutoSell.Value do
         task.wait()
@@ -241,44 +252,51 @@ Toggles.AutoSell:OnChanged(function()
 
                     if color == Color3.fromRGB(121, 137, 142):ToHex() and Options.AutoSellSelection.Value["Common"] and not itemName:match("Portal") and not itemName:match("Regret") then
                         sellTable[itemID] = itemSlot
+                        print("Inserted item into sell table", itemSlot)
                     end
 
                     if color == Color3.fromRGB(52, 202, 73):ToHex() and Options.AutoSellSelection.Value["Uncommon"] then
                         sellTable[itemID] = itemSlot
+                        print("Inserted item into sell table", itemSlot)
                     end
 
                     if color == Color3.fromRGB(5, 128, 233):ToHex() and Options.AutoSellSelection.Value["Rare"] and not itemName:match("Pet") then
                         sellTable[itemID] = itemSlot
+                        print("Inserted item into sell table", itemSlot)
                     end
 
                     if color == Color3.fromRGB(158, 59, 249):ToHex() and Options.AutoSellSelection.Value["Epic"] and not itemName:match("Egg") and not itemName:match("Pet") then
                         sellTable[itemID] = itemSlot
+                        print("Inserted item into sell table", itemSlot)
                     end
 
                     if itemName:match("Portal") and Options.AutoSellSelection.Value["City Portal"] then
                         sellTable[itemID] = itemSlot
+                        print("Inserted item into sell table", itemSlot)
                     end
     
                     if itemName:match("Regret") and Options.AutoSellSelection.Value["Regret Stone"] then
                         sellTable[itemID] = itemSlot
+                        print("Inserted item into sell table", itemSlot)
                     end
-
+                
                     if Toggles.StatFilter.Value then
-                        local luckValue = getSecondaryStats(item, "Luck")
-                        local qfValue = getSecondaryStats(item, "QuantityFind")
+                        if color == Color3.fromRGB(158, 59, 249):ToHex() or color == Color3.fromRGB(249, 86, 59):ToHex() or color == Color3.fromRGB(255, 255, 255):ToHex() then
+                            local luckValue = getSecondaryStats(item, "Luck")
+                            local qfValue = getSecondaryStats(item, "QuantityFind")
+                            print(luckValue, qfValue)
 
-                        if luckValue and qfValue then
-                            if color == Color3.fromRGB(158, 59, 249):ToHex() or color == Color3.fromRGB(249, 86, 59):ToHex() or color == Color3.fromRGB(255, 255, 255):ToHex() then
-                                if qfValue >= Options.QFFilterValue.Value and luckValue >= Options.LuckFilterValue.Value then 
+                            if luckValue and qfValue then
+                                print("Luck and QF present")
+                                if qfValue >= Options.QFFilterValue.Value and luckValue >= Options.LuckFilterValue.Value then
+                                    print("Item matched minimums, removing from sell table", itemSlot)
                                     sellTable[itemID] = nil
                                 end
                             end
                         end
                     end
 
-                    if next(sellTable) ~= nil then
-                        SellingItems:InvokeServer(sellTable)
-                    end
+                    SellingItems:InvokeServer(sellTable)
                 end)
             end
         end
@@ -286,7 +304,7 @@ Toggles.AutoSell:OnChanged(function()
     end
 end)
 
-LeftGroupBox3:AddLabel('\nSelling commons doesn\'t include portals or regret stones. Common potions (health/mana) will be sold. Rare+ pets and epic+ eggs will not be sold.', true)
+LeftGroupBox3:AddLabel('Selling commons doesn\'t include portals or regret stones. Common potions (health/mana) will be sold. Rare+ pets and epic+ eggs will not be sold.', true)
 
 local SellNow = LeftGroupBox3:AddButton('Sell Now', function()
     for _,v in pairs(slots:GetChildren()) do
@@ -325,21 +343,22 @@ local SellNow = LeftGroupBox3:AddButton('Sell Now', function()
                 end
 
                 if Toggles.StatFilter.Value then
-                    local luckValue = getSecondaryStats(item, "Luck")
-                    local qfValue = getSecondaryStats(item, "QuantityFind")
+                    if color == Color3.fromRGB(158, 59, 249):ToHex() or color == Color3.fromRGB(249, 86, 59):ToHex() or color == Color3.fromRGB(255, 255, 255):ToHex() then
+                        local luckValue = getSecondaryStats(item, "Luck")
+                        local qfValue = getSecondaryStats(item, "QuantityFind")
 
-                    if luckValue and qfValue then
-                        if color == Color3.fromRGB(158, 59, 249):ToHex() or color == Color3.fromRGB(249, 86, 59):ToHex() or color == Color3.fromRGB(255, 255, 255):ToHex() then
-                            if qfValue >= Options.QFFilterValue.Value and luckValue >= Options.LuckFilterValue.Value then 
+                        if luckValue and qfValue then
+                            print('Luck: '..luckValue..'% | '..'Quantity Find: '..qfValue..'%')
+
+                            if qfValue >= Options.QFFilterValue.Value and luckValue >= Options.LuckFilterValue.Value then
+                                print("Item matched minimums, removing from sell table.".."Slot: "..itemSlot)
                                 sellTable[itemID] = nil
                             end
                         end
                     end
                 end
 
-                if next(sellTable) ~= nil then
-                    SellingItems:InvokeServer(sellTable)
-                end
+                SellingItems:InvokeServer(sellTable)
             end)
         end
     end
@@ -423,10 +442,10 @@ task.spawn(function()
     while true do
         if pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/uwuscutely/Scripts/main/Version'))() end) then
             if ver ~= MUVersion then
-                Library:Notify('Your current version of Mewobwox Utiwities is outdated!\n\nYour version: '..ver..'\nLatest version: '..MUVersion..'\n\nGrab the latest version by re-executing the script!', 45)
+                Library:Notify('Your current version of Mewobwox Utiwities is outdated!\n\nYour version: '..ver..'\nLatest version: '..MUVersion..'\n\nGrab the latest version by re-executing the script!', 25)
             end
         end
-        task.wait(60)
+        task.wait(30)
     end
 end)
 
