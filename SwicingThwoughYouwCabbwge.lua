@@ -16,10 +16,14 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 local AcceptQuest = ReplicatedStorage.Remotes.Quests:WaitForChild("AcceptQuest")
 local AbandonQuest = ReplicatedStorage.Remotes.Quests:WaitForChild("AbandonQuest")
 local CompleteQuest = ReplicatedStorage.Remotes.Quests:WaitForChild("CompleteQuest")
+local OpenEgg = ReplicatedStorage.Remotes.Eggs:WaitForChild("OpenEgg")
+local BuyAllWeapons = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyAllWeapons")
+local BuyAllAuras = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyAllAuras")
+local BuyClass = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyClass")
 
-ver = '1.0.0'
+ver = '1.1.0'
 
-Library:Notify('Loading Swicing Thwough Youw Cabbwge v'..ver, 5)
+Library:Notify('Loading Swicing Thwough Youw Cabbwge v'..ver, 1)
 
 local Window = Library:CreateWindow({
     Title = 'UwU | Swicing Thwough Youw Cabbwge v'..ver,
@@ -32,7 +36,9 @@ local Tabs = {
     ['UI Settings'] = Window:AddTab('UI Settings'),
 }
 
-local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Auto Swing')
+local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Auto Farm')
+local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Auto Hatch')
+local RightGroupBox = Tabs.Main:AddRightGroupbox('Teleport')
 
 LeftGroupBox:AddToggle('AutoSwing', {
     Text = 'Auto Swing',
@@ -42,14 +48,53 @@ LeftGroupBox:AddToggle('AutoSwing', {
     Default = 'C',
     SyncToggleState = true, 
     Mode = 'Toggle',
-    Text = 'Auto Swing', -- Text to display in the keybind menu
-    NoUI = false, -- Set to true if you want to hide from the Keybind menu,
+    Text = 'Auto Swing',
+    NoUI = false,
 })
 
 LeftGroupBox:AddToggle('AutoCoinQuest', {
     Text = 'Auto Coin Quest',
     Default = false,
     Tooltip = 'Expwoit the shit out of quest bc shitty devs.',
+}):AddKeyPicker('AutoCoinQuestKey',{
+    Default = 'V',
+    SyncToggleState = true, 
+    Mode = 'Toggle',
+    Text = 'Auto Coin Quest',
+    NoUI = false,
+})
+
+LeftGroupBox:AddToggle('AutoPurchase', {
+    Text = 'Auto Purchase All',
+    Default = false,
+    Tooltip = 'Automaticawwy buys all weapons, auras, and classes.',
+}):AddKeyPicker('AutoPurchaseKey',{
+    Default = 'P',
+    SyncToggleState = true, 
+    Mode = 'Toggle',
+    Text = 'Auto Purchase',
+    NoUI = false,
+})
+
+LeftGroupBox2:AddInput('EggType', {
+    Default = 'Mythical',
+    Numeric = false,
+    Finished = true,
+    Text = 'Auto Hatch Egg',
+    Tooltip = 'Enter the egg type to hatch!',
+    Placeholder = 'Common, Rare, Epic, Legendary, Mythical',
+})
+
+LeftGroupBox2:AddToggle('AutoEgg', {
+    Text = 'Auto Egg Hatch',
+    Default = false,
+    Tooltip = 'Automaticawwy hatches eggs.',
+}):AddKeyPicker('AutoEggKey',{
+    Default = 'E',
+    SyncToggleState = true, 
+    Mode = 'Toggle',
+    Text = 'Auto Egg',
+    NoUI = false,
 })
 
 Toggles.AutoSwing:OnChanged(function()
@@ -69,7 +114,7 @@ Toggles.AutoCoinQuest:OnChanged(function()
     
         if PlayerGui.Popups.QuestProgress.Frame.TextLabel.Text:match("Coins") then
             while true do
-                Humanoid.CFrame = CFrame.new(-569.3, 130.3, 150.8)
+                Humanoid.CFrame = CFrame.new(-569, 130, 150)
                 task.wait(1)
                 Humanoid.CFrame = CFrame.new(-579, 126, 162)
 
@@ -82,6 +127,38 @@ Toggles.AutoCoinQuest:OnChanged(function()
         end
     end
 end)
+
+Toggles.AutoEgg:OnChanged(function()
+    while Toggles.AutoEgg.Value do
+        OpenEgg:InvokeServer(Options.EggType.Value.." Egg", 3)
+        task.wait()
+    end
+end)
+
+Toggles.AutoPurchase:OnChanged(function()
+    while Toggles.AutoPurchase.Value do
+        local currentClass = Player.PlayerData.Equipped:GetAttribute("Class")
+
+        BuyClass:InvokeServer(currentClass + 1)
+        BuyAllWeapons:InvokeServer()
+        
+        task.wait(1)
+
+        BuyClass:InvokeServer(currentClass + 1)
+        BuyAllAuras:InvokeServer()
+
+        if PlayerGui.MainUI.BottomCenter.Spellblade.ImageColor3 ~= Color3.fromRGB(98, 53, 23) then
+            VirtualInputManager:SendKeyEvent(true, "One", false, game)
+            task.wait()
+            VirtualInputManager:SendKeyEvent(false, "One", false, game)
+        end
+    end
+end)
+
+RightGroupBox:AddButton("Spawn", function() Humanoid.CFrame = CFrame.new(-569, 130, 150) end)
+RightGroupBox:AddButton("Crystal Leaderboard", function() Humanoid.CFrame = CFrame.new(-344, 125, 106) end)
+RightGroupBox:AddButton("Tower", function() Humanoid.CFrame = CFrame.new(-8525, 145, -272) end)
+RightGroupBox:AddButton("Mythical Egg", function() Humanoid.CFrame = CFrame.new(-8528, 146, -236) end)
 
 Library:SetWatermarkVisibility(true)
 Library:SetWatermark('Meow Meow UwU ^_^')
