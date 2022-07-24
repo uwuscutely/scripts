@@ -10,7 +10,7 @@ local UserInputService = game:GetService("UserInputService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
 
 local Player = game:GetService("Players").LocalPlayer
-local Humanoid = Player.Character.HumanoidRootPart
+local HumanoidRP = Player.Character.HumanoidRootPart
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
 local AcceptQuest = ReplicatedStorage.Remotes.Quests:WaitForChild("AcceptQuest")
@@ -21,7 +21,7 @@ local BuyAllWeapons = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyAllWeapons
 local BuyAllAuras = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyAllAuras")
 local BuyClass = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyClass")
 
-ver = '1.1.0'
+ver = '1.2.0'
 
 Library:Notify('Loading Swicing Thwough Youw Cabbwge v'..ver, 1)
 
@@ -39,6 +39,7 @@ local Tabs = {
 local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Auto Farm')
 local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Auto Hatch')
 local RightGroupBox = Tabs.Main:AddRightGroupbox('Teleport')
+local RightGroupBox2 = Tabs.Main:AddRightGroupbox('Player')
 
 LeftGroupBox:AddToggle('AutoSwing', {
     Text = 'Auto Swing',
@@ -80,13 +81,13 @@ LeftGroupBox2:AddInput('EggType', {
     Default = 'Mythical',
     Numeric = false,
     Finished = true,
-    Text = 'Auto Hatch Egg',
+    Text = 'Egg Type',
     Tooltip = 'Enter the egg type to hatch!',
     Placeholder = 'Common, Rare, Epic, Legendary, Mythical',
 })
 
 LeftGroupBox2:AddToggle('AutoEgg', {
-    Text = 'Auto Egg Hatch',
+    Text = 'Auto Hatch',
     Default = false,
     Tooltip = 'Automaticawwy hatches eggs.',
 }):AddKeyPicker('AutoEggKey',{
@@ -155,10 +156,23 @@ Toggles.AutoPurchase:OnChanged(function()
     end
 end)
 
-RightGroupBox:AddButton("Spawn", function() Humanoid.CFrame = CFrame.new(-569, 130, 150) end)
-RightGroupBox:AddButton("Crystal Leaderboard", function() Humanoid.CFrame = CFrame.new(-344, 125, 106) end)
-RightGroupBox:AddButton("Tower", function() Humanoid.CFrame = CFrame.new(-8525, 145, -272) end)
-RightGroupBox:AddButton("Mythical Egg", function() Humanoid.CFrame = CFrame.new(-8528, 146, -236) end)
+RightGroupBox:AddButton("Spawn", function() HumanoidRP.CFrame = CFrame.new(-569, 130, 150) end)
+RightGroupBox:AddButton("Crystal Leaderboard", function() HumanoidRP.CFrame = CFrame.new(-344, 125, 106) end)
+RightGroupBox:AddButton("Tower", function() HumanoidRP.CFrame = CFrame.new(-8525, 145, -272) end)
+RightGroupBox:AddButton("Mythical Egg", function() HumanoidRP.CFrame = CFrame.new(-8528, 146, -236) end)
+
+RightGroupBox2:AddSlider('Walkspeed', {
+    Text = 'Walkspeed',
+    Default = 20,
+    Min = 0,
+    Max = 69,
+    Rounding = 1,
+    Compact = false,
+})
+
+Options.Walkspeed:OnChanged(function()
+    Player.Character.Humanoid.WalkSpeed = Options.Walkspeed.Value
+end)
 
 Library:SetWatermarkVisibility(true)
 Library:SetWatermark('Meow Meow UwU ^_^')
