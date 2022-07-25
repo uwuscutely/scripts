@@ -5,11 +5,14 @@ local Library = loadstring(game:HttpGet(repo..'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo..'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(repo..'addons/SaveManager.lua'))()
 
+local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local UserInputService = game:GetService("UserInputService")
 local VirtualInputManager = game:GetService("VirtualInputManager")
+local HttpService = game:GetService("HttpService")
 
 local Player = game:GetService("Players").LocalPlayer
+local Character = Player.Character
 local HumanoidRP = Player.Character.HumanoidRootPart
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
@@ -20,8 +23,34 @@ local OpenEgg = ReplicatedStorage.Remotes.Eggs:WaitForChild("OpenEgg")
 local BuyAllWeapons = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyAllWeapons")
 local BuyAllAuras = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyAllAuras")
 local BuyClass = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyClass")
+local CreateProjectile = ReplicatedStorage.Remotes.Spellblades:WaitForChild("CreateProjectile")
+local ProjectileHit = ReplicatedStorage.Remotes.Spellblades:WaitForChild("ProjectileHit")
 
-ver = '1.2.0'
+if PlayerGui.MainUI.BottomCenter.Spellblade.ImageColor3 ~= Color3.fromRGB(98, 53, 23) then
+    VirtualInputManager:SendKeyEvent(true, "One", false, game)
+    task.wait()
+    VirtualInputManager:SendKeyEvent(false, "One", false, game)
+end
+
+task.wait(1)
+
+local projectileScript = Character:FindFirstChildOfClass("Tool"):FindFirstChildOfClass("LocalScript")
+local projectileFunction
+
+for i, v in pairs(getgc()) do
+    if type(v) == "function" and islclosure(v) then
+        if getfenv(v).script == projectileScript then
+            local upvalues = debug.getupvalues(v)
+
+            if upvalues[1] == HttpService then
+                projectileFunction = v
+                break
+            end
+        end 
+    end
+end
+
+ver = '2.0.0'
 
 Library:Notify('Loading Swicing Thwough Youw Cabbwge v'..ver, 1)
 
@@ -41,7 +70,7 @@ local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Auto Hatch')
 local RightGroupBox = Tabs.Main:AddRightGroupbox('Teleport')
 local RightGroupBox2 = Tabs.Main:AddRightGroupbox('Player')
 
-LeftGroupBox:AddToggle('AutoSwing', {
+--[[LeftGroupBox:AddToggle('AutoSwing', {
     Text = 'Auto Swing',
     Default = false,
     Tooltip = 'Automaticawwy swings youw swowd (swightwy quickew than the gawme\'s cwappy owne).',
@@ -51,7 +80,65 @@ LeftGroupBox:AddToggle('AutoSwing', {
     Mode = 'Toggle',
     Text = 'Auto Swing',
     NoUI = false,
+})]]
+
+LeftGroupBox:AddToggle('AutoAttack', {
+    Text = 'Auto Attack',
+    Default = false,
+    Tooltip = 'Spam the shit out of the attack bc dev made the function cwient side.',
+}):AddKeyPicker('AutoAttackKey',{
+    Default = 'B',
+    SyncToggleState = true, 
+    Mode = 'Toggle',
+    Text = 'Auto Attack',
+    NoUI = false,
 })
+
+LeftGroupBox:AddDivider()
+
+LeftGroupBox:AddToggle('TowerKillAura', {
+    Text = 'Tower Kill Aura',
+    Default = false,
+    Tooltip = 'Spam attack own aww mobs at the same time bc we\'we gigachad.',
+}):AddKeyPicker('TowerKillAuraKey',{
+    Default = 'K',
+    SyncToggleState = true, 
+    Mode = 'Toggle',
+    Text = 'Tower Kill Aura',
+    NoUI = false,
+})
+
+LeftGroupBox:AddSlider('TowerKillAuraDelay', {
+    Text = 'Tower Kill Aura Delay',
+    Default = 0.1,
+    Min = 0.01,
+    Max = 1,
+    Rounding = 2,
+    Compact = false,
+})
+
+LeftGroupBox:AddToggle('WorldKillAura', {
+    Text = 'World Kill Aura',
+    Default = false,
+    Tooltip = 'Spam attack own aww mobs at the same time bc we\'we gigachad.',
+}):AddKeyPicker('WorldKillAuraKey',{
+    Default = 'L',
+    SyncToggleState = true, 
+    Mode = 'Toggle',
+    Text = 'World Kill Aura',
+    NoUI = false,
+})
+
+LeftGroupBox:AddSlider('WorldKillAuraDelay', {
+    Text = 'World Kill Aura Delay',
+    Default = 0.1,
+    Min = 0.01,
+    Max = 1,
+    Rounding = 2,
+    Compact = false,
+})
+
+LeftGroupBox:AddDivider()
 
 LeftGroupBox:AddToggle('AutoCoinQuest', {
     Text = 'Auto Coin Quest',
@@ -66,7 +153,7 @@ LeftGroupBox:AddToggle('AutoCoinQuest', {
 })
 
 LeftGroupBox:AddToggle('AutoPurchase', {
-    Text = 'Auto Purchase All',
+    Text = 'Auto Purchase',
     Default = false,
     Tooltip = 'Automaticawwy buys all weapons, auras, and classes.',
 }):AddKeyPicker('AutoPurchaseKey',{
@@ -77,13 +164,12 @@ LeftGroupBox:AddToggle('AutoPurchase', {
     NoUI = false,
 })
 
-LeftGroupBox2:AddInput('EggType', {
-    Default = 'Mythical',
-    Numeric = false,
-    Finished = true,
+LeftGroupBox2:AddDropdown('EggType', {
+    Values = { 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
+    Default = 1,
+    Multi = false,
     Text = 'Egg Type',
-    Tooltip = 'Enter the egg type to hatch!',
-    Placeholder = 'Common, Rare, Epic, Legendary, Mythical',
+    Tooltip = 'Sewect the egg uwu wawnt tuwu hatch.',
 })
 
 LeftGroupBox2:AddToggle('AutoEgg', {
@@ -98,12 +184,53 @@ LeftGroupBox2:AddToggle('AutoEgg', {
     NoUI = false,
 })
 
-Toggles.AutoSwing:OnChanged(function()
+--[[Toggles.AutoSwing:OnChanged(function()
     while Toggles.AutoSwing.Value do
         local mouse = UserInputService:GetMouseLocation()
         VirtualInputManager:SendMouseButtonEvent(mouse.x, mouse.y, 0, true, game, 0)
         task.wait()
         VirtualInputManager:SendMouseButtonEvent(mouse.x, mouse.y, 0, false, game, 0)
+    end
+end)]]
+
+Toggles.AutoAttack:OnChanged(function()
+    while Toggles.AutoAttack.Value do
+        projectileFunction()
+        task.wait()
+    end
+end)
+
+Toggles.TowerKillAura:OnChanged(function()
+    while Toggles.TowerKillAura.Value do
+        for _,v in pairs (Workspace.TowerOfHeaven.Mobs:GetChildren()) do
+            local generatedID = HttpService:GenerateGUID(false)
+            local color = {
+                ["color"] = Character:FindFirstChild("WeaponModel").Blade.Color
+            }
+
+            if v.HumanoidRootPart then
+                CreateProjectile:FireServer(generatedID, v.HumanoidRootPart.CFrame, color)
+                ProjectileHit:FireServer(generatedID, v)
+            end
+        end
+        task.wait(Options.TowerKillAuraDelay.Value)
+    end
+end)
+
+Toggles.WorldKillAura:OnChanged(function()
+    while Toggles.WorldKillAura.Value do
+        for _,v in pairs (Workspace.Mobs:GetChildren()) do
+            local generatedID = HttpService:GenerateGUID(false)
+            local color = {
+                ["color"] = Character:FindFirstChild("WeaponModel").Blade.Color
+            }
+            
+            if v.HumanoidRootPart then
+                CreateProjectile:FireServer(generatedID, v.HumanoidRootPart.CFrame, color)
+                ProjectileHit:FireServer(generatedID, v)
+            end
+        end
+        task.wait(Options.WorldKillAuraDelay.Value)
     end
 end)
 
@@ -198,7 +325,7 @@ Library:Notify('Loaded Swicing Thwough Youw Cabbwge v'..ver..'! Meow meow ^-^', 
 
 -- Update checker from https://github.com/EdgeIY/infiniteyield
 task.spawn(function()
-    Library:Notify('Running update check!', 2)
+    Library:Notify('Running update check!', 1)
     while true do
         if pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/uwuscutely/Scripts/main/Version'))() end) then
             if ver ~= BSVersion then
