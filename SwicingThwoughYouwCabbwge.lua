@@ -165,7 +165,7 @@ LeftGroupBox:AddToggle('AutoPurchase', {
 })
 
 LeftGroupBox2:AddDropdown('EggType', {
-    Values = { 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
+    Values = { 'Exotic', 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
     Default = 1,
     Multi = false,
     Text = 'Egg Type',
