@@ -13,13 +13,14 @@ local HttpService = game:GetService("HttpService")
 
 local Player = game:GetService("Players").LocalPlayer
 local Character = Player.Character
-local HumanoidRP = Player.Character.HumanoidRootPart
+local HumanoidRP = Player.Character:FindFirstChild("HumanoidRootPart")
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
 local AcceptQuest = ReplicatedStorage.Remotes.Quests:WaitForChild("AcceptQuest")
 local AbandonQuest = ReplicatedStorage.Remotes.Quests:WaitForChild("AbandonQuest")
 local CompleteQuest = ReplicatedStorage.Remotes.Quests:WaitForChild("CompleteQuest")
 local OpenEgg = ReplicatedStorage.Remotes.Eggs:WaitForChild("OpenEgg")
+local OpenChest = ReplicatedStorage.Remotes.Chests:WaitForChild("OpenChest")
 local BuyAllWeapons = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyAllWeapons")
 local BuyAllAuras = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyAllAuras")
 local BuyClass = ReplicatedStorage.Remotes.Shop:WaitForChild("BuyClass")
@@ -46,11 +47,11 @@ for i, v in pairs(getgc()) do
                 projectileFunction = v
                 break
             end
-        end 
+        end
     end
 end
 
-ver = '2.0.0'
+ver = '2.1.0'
 
 Library:Notify('Loading Swicing Thwough Youw Cabbwge v'..ver, 1)
 
@@ -66,7 +67,7 @@ local Tabs = {
 }
 
 local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Auto Farm')
-local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Auto Hatch')
+local LeftGroupBox2 = Tabs.Main:AddLeftGroupbox('Auto Open')
 local RightGroupBox = Tabs.Main:AddRightGroupbox('Teleport')
 local RightGroupBox2 = Tabs.Main:AddRightGroupbox('Player')
 
@@ -140,18 +141,6 @@ LeftGroupBox:AddSlider('WorldKillAuraDelay', {
 
 LeftGroupBox:AddDivider()
 
-LeftGroupBox:AddToggle('AutoCoinQuest', {
-    Text = 'Auto Coin Quest',
-    Default = false,
-    Tooltip = 'Expwoit the shit out of quest bc shitty devs.',
-}):AddKeyPicker('AutoCoinQuestKey',{
-    Default = 'V',
-    SyncToggleState = true, 
-    Mode = 'Toggle',
-    Text = 'Auto Coin Quest',
-    NoUI = false,
-})
-
 LeftGroupBox:AddToggle('AutoPurchase', {
     Text = 'Auto Purchase',
     Default = false,
@@ -164,8 +153,31 @@ LeftGroupBox:AddToggle('AutoPurchase', {
     NoUI = false,
 })
 
+LeftGroupBox:AddToggle('AutoOpenTP', {
+    Text = 'Auto Open Teleport',
+    Default = false,
+    Tooltip = 'Tewepowts uwu between the egg awnd the chest.',
+}):AddKeyPicker('AutoOpenTPKey',{
+    Default = 'L',
+    SyncToggleState = true, 
+    Mode = 'Toggle',
+    Text = 'Auto Open Teleport Key',
+    NoUI = false,
+})
+
+LeftGroupBox:AddSlider('AutoOpenTPDelay', {
+    Text = 'Auto Open TP Delay',
+    Default = 0.1,
+    Min = 0.01,
+    Max = 1,
+    Rounding = 2,
+    Compact = false,
+})
+
+LeftGroupBox:AddDivider()
+
 LeftGroupBox2:AddDropdown('EggType', {
-    Values = { 'Exotic', 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
+    Values = { 'Demonic','Exotic', 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
     Default = 1,
     Multi = false,
     Text = 'Egg Type',
@@ -177,6 +189,28 @@ LeftGroupBox2:AddToggle('AutoEgg', {
     Default = false,
     Tooltip = 'Automaticawwy hatches eggs.',
 }):AddKeyPicker('AutoEggKey',{
+    Default = 'E',
+    SyncToggleState = true, 
+    Mode = 'Toggle',
+    Text = 'Auto Egg',
+    NoUI = false,
+})
+
+LeftGroupBox:AddDivider()
+
+LeftGroupBox2:AddDropdown('ChestType', {
+    Values = { 'Demonic','Exotic', 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
+    Default = 1,
+    Multi = false,
+    Text = 'Egg Type',
+    Tooltip = 'Sewect the chwest uwu wawnt tuwu hatch.',
+})
+
+LeftGroupBox2:AddToggle('AutoChest', {
+    Text = 'Auto Chest',
+    Default = false,
+    Tooltip = 'Automaticawwy opens chwests.',
+}):AddKeyPicker('AutoChestKey',{
     Default = 'E',
     SyncToggleState = true, 
     Mode = 'Toggle',
@@ -234,25 +268,11 @@ Toggles.WorldKillAura:OnChanged(function()
     end
 end)
 
-Toggles.AutoCoinQuest:OnChanged(function()
-    while Toggles.AutoCoinQuest.Value do
-        AbandonQuest:InvokeServer()
-        task.wait()
-        AcceptQuest:InvokeServer()
-    
-        if PlayerGui.Popups.QuestProgress.Frame.TextLabel.Text:match("Coins") then
-            while true do
-                Humanoid.CFrame = CFrame.new(-569, 130, 150)
-                task.wait(1)
-                Humanoid.CFrame = CFrame.new(-579, 126, 162)
-
-                if PlayerGui.Popups.QuestProgress.Frame.TextLabel.Text:match("Completed") then
-                    CompleteQuest:InvokeServer()
-                    break
-                end
-                task.wait(0.5)
-            end
-        end
+Toggles.AutoOpenTP:OnChanged(function()
+    while Toggles.AutoOpenTP.Value do
+        HumanoidRP.CFrame = CFrame.new(218, 1, -61)
+        task.wait(Options.AutoOpenTPDelay.Value)
+        HumanoidRP.CFrame = CFrame.new(167, 0, 48)
     end
 end)
 
@@ -263,13 +283,20 @@ Toggles.AutoEgg:OnChanged(function()
     end
 end)
 
+Toggles.AutoChest:OnChanged(function()
+    while Toggles.AutoChest.Value do
+        OpenChest:InvokeServer(Options.ChestType.Value.." Chest", 3)
+        task.wait()
+    end
+end)
+
 Toggles.AutoPurchase:OnChanged(function()
     while Toggles.AutoPurchase.Value do
         local currentClass = Player.PlayerData.Equipped:GetAttribute("Class")
 
         BuyClass:InvokeServer(currentClass + 1)
         BuyAllWeapons:InvokeServer()
-        
+
         task.wait(1)
 
         BuyClass:InvokeServer(currentClass + 1)
