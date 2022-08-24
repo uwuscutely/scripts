@@ -153,7 +153,7 @@ LeftGroupBox:AddToggle('AutoPurchase', {
     NoUI = false,
 })
 
-LeftGroupBox:AddToggle('AutoOpenTP', {
+LeftGroupBox2:AddToggle('AutoOpenTP', {
     Text = 'Auto Open Teleport',
     Default = false,
     Tooltip = 'Tewepowts uwu between the egg awnd the chest.',
@@ -165,7 +165,7 @@ LeftGroupBox:AddToggle('AutoOpenTP', {
     NoUI = false,
 })
 
-LeftGroupBox:AddSlider('AutoOpenTPDelay', {
+LeftGroupBox2:AddSlider('AutoOpenTPDelay', {
     Text = 'Auto Open TP Delay',
     Default = 0.1,
     Min = 0.01,
@@ -199,7 +199,7 @@ LeftGroupBox2:AddToggle('AutoEgg', {
 LeftGroupBox:AddDivider()
 
 LeftGroupBox2:AddDropdown('ChestType', {
-    Values = { 'Demonic','Exotic', 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
+    Values = { 'Legendary', 'Epic', 'Rare', 'Common' },
     Default = 1,
     Multi = false,
     Text = 'Egg Type',
@@ -273,6 +273,7 @@ Toggles.AutoOpenTP:OnChanged(function()
         HumanoidRP.CFrame = CFrame.new(218, 1, -61)
         task.wait(Options.AutoOpenTPDelay.Value)
         HumanoidRP.CFrame = CFrame.new(167, 0, 48)
+        task.wait(Options.AutoOpenTPDelay.Value)
     end
 end)
 
