@@ -270,6 +270,13 @@ end)
 
 Toggles.AutoOpenTP:OnChanged(function()
     while Toggles.AutoOpenTP.Value do
+        task.spawn(function()
+            while Toggles.AutoOpenTP.Value do
+                OpenEgg:InvokeServer(Options.EggType.Value.." Egg", 3)
+                OpenChest:InvokeServer(Options.ChestType.Value.." Chest", 3)
+                task.wait()
+            end
+        end)
         HumanoidRP.CFrame = CFrame.new(218, 1, -61)
         task.wait(Options.AutoOpenTPDelay.Value)
         HumanoidRP.CFrame = CFrame.new(167, 0, 48)
