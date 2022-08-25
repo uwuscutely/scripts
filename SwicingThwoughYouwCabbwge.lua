@@ -322,6 +322,21 @@ RightGroupBox:AddButton("Spawn", function() HumanoidRP.CFrame = CFrame.new(-569,
 RightGroupBox:AddButton("Crystal Leaderboard", function() HumanoidRP.CFrame = CFrame.new(-344, 125, 106) end)
 RightGroupBox:AddButton("Tower", function() HumanoidRP.CFrame = CFrame.new(-8525, 145, -272) end)
 RightGroupBox:AddButton("Mythical Egg", function() HumanoidRP.CFrame = CFrame.new(-8528, 146, -236) end)
+RightGroupBox:AddLabel("Click TP"):AddKeyPicker('ClickTPKey', {
+    Default = 'N',
+    SyncToggleState = false, 
+    Mode = 'Toggle',
+    Text = 'Click Teleport',
+    NoUI = false,
+
+})
+
+Options.ClickTPKey:OnClick(function()
+    local Mouse = Player:GetMouse()
+    if Mouse.Target then
+        HumanoidRP.CFrame = CFrame.new(Mouse.Hit.x, Mouse.Hit.y + 5, Mouse.Hit.z)
+    end
+end)
 
 RightGroupBox2:AddSlider('Walkspeed', {
     Text = 'Walkspeed',
