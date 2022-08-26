@@ -88,7 +88,7 @@ LeftGroupBox:AddToggle('AutoAttack', {
     Default = false,
     Tooltip = 'Spam the shit out of the attack bc dev made the function cwient side.',
 }):AddKeyPicker('AutoAttackKey',{
-    Default = 'B',
+    Default = 'N',
     SyncToggleState = true, 
     Mode = 'Toggle',
     Text = 'Auto Attack',
@@ -146,7 +146,7 @@ LeftGroupBox:AddToggle('AutoPurchase', {
     Default = false,
     Tooltip = 'Automaticawwy buys all weapons, auras, and classes.',
 }):AddKeyPicker('AutoPurchaseKey',{
-    Default = 'P',
+    Default = '[',
     SyncToggleState = true, 
     Mode = 'Toggle',
     Text = 'Auto Purchase',
@@ -323,7 +323,7 @@ RightGroupBox:AddButton("Crystal Leaderboard", function() HumanoidRP.CFrame = CF
 RightGroupBox:AddButton("Tower", function() HumanoidRP.CFrame = CFrame.new(-8525, 145, -272) end)
 RightGroupBox:AddButton("Mythical Egg", function() HumanoidRP.CFrame = CFrame.new(-8528, 146, -236) end)
 RightGroupBox:AddLabel("Click TP"):AddKeyPicker('ClickTPKey', {
-    Default = 'N',
+    Default = 'B',
     SyncToggleState = false, 
     Mode = 'Toggle',
     Text = 'Click Teleport',
