@@ -169,7 +169,7 @@ LeftGroupBox2:AddSlider('AutoOpenTPDelay', {
     Text = 'Auto Open TP Delay',
     Default = 0.1,
     Min = 0.01,
-    Max = 1,
+    Max = 3,
     Rounding = 2,
     Compact = false,
 })
