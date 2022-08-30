@@ -199,7 +199,7 @@ LeftGroupBox2:AddToggle('AutoEgg', {
 LeftGroupBox:AddDivider()
 
 LeftGroupBox2:AddDropdown('ChestType', {
-    Values = { 'Legendary', 'Epic', 'Rare', 'Common' },
+    Values = { 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
     Default = 1,
     Multi = false,
     Text = 'Egg Type',
@@ -279,7 +279,7 @@ Toggles.AutoOpenTP:OnChanged(function()
         end)
         HumanoidRP.CFrame = CFrame.new(218, 1, -61)
         task.wait(Options.AutoOpenTPDelay.Value)
-        HumanoidRP.CFrame = CFrame.new(167, 0, 48)
+        HumanoidRP.CFrame = CFrame.new(163, 0, 51)
         task.wait(Options.AutoOpenTPDelay.Value)
     end
 end)
