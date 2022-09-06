@@ -177,7 +177,7 @@ LeftGroupBox2:AddSlider('AutoOpenTPDelay', {
 LeftGroupBox:AddDivider()
 
 LeftGroupBox2:AddDropdown('EggType', {
-    Values = { 'Demonic','Exotic', 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
+    Values = { 'Frozen', 'Demonic', 'Exotic', 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
     Default = 1,
     Multi = false,
     Text = 'Egg Type',
@@ -199,7 +199,7 @@ LeftGroupBox2:AddToggle('AutoEgg', {
 LeftGroupBox:AddDivider()
 
 LeftGroupBox2:AddDropdown('ChestType', {
-    Values = { 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
+    Values = { 'Exotic', 'Mythical', 'Legendary', 'Epic', 'Rare', 'Common' },
     Default = 1,
     Multi = false,
     Text = 'Egg Type',
